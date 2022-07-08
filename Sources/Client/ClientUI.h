@@ -87,6 +87,17 @@ namespace spades {
 			// lm: so the chat does not have the initial chat key
 			bool isIgnored(const std::string &key);
 			void setIgnored(const std::string &key);
+			
+			void send1();
+			void send2();
+			void send3();
+			void send4();
+			void send5();
+			void send6();
+			void send7();
+			void send8();
+			void send9();
+			void send10();
 		};
 		;
 	} // namespace client

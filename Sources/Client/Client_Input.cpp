@@ -89,6 +89,17 @@ DEFINE_SPADES_SETTING(cg_keyAutoFocus, "MiddleMouseButton");
 
 DEFINE_SPADES_SETTING(n_hitTestKey, "F8");
 
+DEFINE_SPADES_SETTING(ds_macrobind1, "F1");
+DEFINE_SPADES_SETTING(ds_macrobind2, "F2");
+DEFINE_SPADES_SETTING(ds_macrobind3, "F3");
+DEFINE_SPADES_SETTING(ds_macrobind4, "F4");
+DEFINE_SPADES_SETTING(ds_macrobind5, "F5");
+DEFINE_SPADES_SETTING(ds_macrobind6, "");
+DEFINE_SPADES_SETTING(ds_macrobind7, "");
+DEFINE_SPADES_SETTING(ds_macrobind8, "");
+DEFINE_SPADES_SETTING(ds_macrobind9, "");
+DEFINE_SPADES_SETTING(ds_macrobind10, "");
+
 namespace spades {
 	namespace client {
 
@@ -540,7 +551,68 @@ namespace spades {
 						// team chat
 						scriptedUI->EnterTeamChatWindow();
 						scriptedUI->setIgnored(name);
-					} else if (CheckKey(cg_keyZoomChatLog, name)) {
+					} else if (CheckKey(ds_macrobind1, name) && down) {
+
+						scriptedUI->send1();
+						scriptedUI->setIgnored(name);
+						Handle<IAudioChunk> chunk =
+						audioDevice->RegisterSound("Sounds/Player/Flashlight.opus");
+						audioDevice->PlayLocal(chunk.GetPointerOrNull(), AudioParam());
+					} else if (CheckKey(ds_macrobind2, name) && down) {
+
+						scriptedUI->send2();
+						Handle<IAudioChunk> chunk =
+						audioDevice->RegisterSound("Sounds/Player/Flashlight.opus");
+						audioDevice->PlayLocal(chunk.GetPointerOrNull(), AudioParam());
+					} else if (CheckKey(ds_macrobind3, name) && down) {
+
+						scriptedUI->send3();
+						Handle<IAudioChunk> chunk =
+						audioDevice->RegisterSound("Sounds/Player/Flashlight.opus");
+						audioDevice->PlayLocal(chunk.GetPointerOrNull(), AudioParam());
+					} else if (CheckKey(ds_macrobind4, name) && down) {
+
+						scriptedUI->send4();
+						Handle<IAudioChunk> chunk =
+						audioDevice->RegisterSound("Sounds/Player/Flashlight.opus");
+						audioDevice->PlayLocal(chunk.GetPointerOrNull(), AudioParam());
+					} else if (CheckKey(ds_macrobind5, name) && down) {
+
+						scriptedUI->send5();
+						Handle<IAudioChunk> chunk =
+						audioDevice->RegisterSound("Sounds/Player/Flashlight.opus");
+						audioDevice->PlayLocal(chunk.GetPointerOrNull(), AudioParam());
+					} else if (CheckKey(ds_macrobind6, name) && down) {
+
+						scriptedUI->send6();
+						Handle<IAudioChunk> chunk =
+						audioDevice->RegisterSound("Sounds/Player/Flashlight.opus");
+						audioDevice->PlayLocal(chunk.GetPointerOrNull(), AudioParam());
+					} else if (CheckKey(ds_macrobind7, name) && down) {
+
+						scriptedUI->send7();
+						Handle<IAudioChunk> chunk =
+						audioDevice->RegisterSound("Sounds/Player/Flashlight.opus");
+						audioDevice->PlayLocal(chunk.GetPointerOrNull(), AudioParam());
+					} else if (CheckKey(ds_macrobind8, name) && down) {
+
+						scriptedUI->send8();
+						Handle<IAudioChunk> chunk =
+						audioDevice->RegisterSound("Sounds/Player/Flashlight.opus");
+						audioDevice->PlayLocal(chunk.GetPointerOrNull(), AudioParam());
+					} else if (CheckKey(ds_macrobind9, name) && down) {
+
+						scriptedUI->send9();
+						Handle<IAudioChunk> chunk =
+						audioDevice->RegisterSound("Sounds/Player/Flashlight.opus");
+						audioDevice->PlayLocal(chunk.GetPointerOrNull(), AudioParam());
+					} else if (CheckKey(ds_macrobind10, name) && down) {
+
+						scriptedUI->send10();
+						Handle<IAudioChunk> chunk =
+						audioDevice->RegisterSound("Sounds/Player/Flashlight.opus");
+						audioDevice->PlayLocal(chunk.GetPointerOrNull(), AudioParam());	
+					}else if (CheckKey(cg_keyZoomChatLog, name)) {
 						chatWindow->SetExpanded(down);
 					} else if (name == "/" && down) {
 						// command

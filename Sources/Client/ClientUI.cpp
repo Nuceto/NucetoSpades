@@ -30,6 +30,18 @@
 #include <ScriptBindings/Config.h>
 #include <ScriptBindings/ScriptFunction.h>
 
+DEFINE_SPADES_SETTING(n_globalCommand, "0");
+DEFINE_SPADES_SETTING(ds_macro_1, "/ratio");
+DEFINE_SPADES_SETTING(ds_macro_2, "/accuracy");
+DEFINE_SPADES_SETTING(ds_macro_3, "/an");
+DEFINE_SPADES_SETTING(ds_macro_4, "/streak");
+DEFINE_SPADES_SETTING(ds_macro_5, "Change me with /ds_macro_5 [macro]");
+DEFINE_SPADES_SETTING(ds_macro_6, "Change me with /ds_macro_6 [macro]");
+DEFINE_SPADES_SETTING(ds_macro_7, "Change me with /ds_macro_7 [macro]");
+DEFINE_SPADES_SETTING(ds_macro_8, "Change me with /ds_macro_8 [macro]");
+DEFINE_SPADES_SETTING(ds_macro_9, "Change me with /ds_macro_9 [macro]");
+DEFINE_SPADES_SETTING(ds_macro_10, "Change me with /ds_macro_10 [macro]");
+
 namespace spades {
 	namespace client {
 		ClientUI::ClientUI(IRenderer *r, IAudioDevice *a, FontManager *fontManager, Client *client)
@@ -66,6 +78,62 @@ namespace spades {
 			if (!client)
 				return;
 			client->net->SendChat(msg, isGlobal);
+		}
+		
+
+		void ClientUI::send1() {
+			if (!client)
+				return;
+			client->net->SendChat((std::string)ds_macro_1, n_globalCommand ? true : false);
+		}
+
+		void ClientUI::send2() {
+			if (!client)
+				return;
+			client->net->SendChat((std::string)ds_macro_2, n_globalCommand ? true : false);
+		}
+
+		void ClientUI::send3() {
+			if (!client)
+				return;
+			client->net->SendChat((std::string)ds_macro_3, n_globalCommand ? true : false);
+		}
+
+		void ClientUI::send4() {
+			if (!client)
+				return;
+			client->net->SendChat((std::string)ds_macro_4, n_globalCommand ? true : false);
+		}
+		
+		void ClientUI::send5() {
+			if (!client)
+				return;
+			client->net->SendChat((std::string)ds_macro_5, n_globalCommand ? true : false);
+		}
+		void ClientUI::send6() {
+			if (!client)
+				return;
+			client->net->SendChat((std::string)ds_macro_6, n_globalCommand ? true : false);
+		}
+		void ClientUI::send7() {
+			if (!client)
+				return;
+			client->net->SendChat((std::string)ds_macro_7, n_globalCommand ? true : false);
+		}
+		void ClientUI::send8() {
+			if (!client)
+				return;
+			client->net->SendChat((std::string)ds_macro_8, n_globalCommand ? true : false);
+		}
+		void ClientUI::send9() {
+			if (!client)
+				return;
+			client->net->SendChat((std::string)ds_macro_9, n_globalCommand ? true : false);
+		}
+		void ClientUI::send10() {
+			if (!client)
+				return;
+			client->net->SendChat((std::string)ds_macro_10, n_globalCommand ? true : false);
 		}
 
 		void ClientUI::AlertNotice(const std::string &msg) {
