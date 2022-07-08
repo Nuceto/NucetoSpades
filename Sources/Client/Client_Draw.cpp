@@ -53,6 +53,7 @@
 #include "TCProgressView.h"
 #include "Tracer.h"
 #include "HitTestDebugger.h"
+#include "LuckView.h"
 
 #include "GameMap.h"
 #include "Grenade.h"
@@ -77,6 +78,7 @@ DEFINE_SPADES_SETTING(cg_playerNameY, "0");
 
 DEFINE_SPADES_SETTING(n_hitTestSize, "210");
 DEFINE_SPADES_SETTING(n_hitTestTransparency, "1");
+DEFINE_SPADES_SETTING(br_LuckView, "1");
 
 // ADDED: Settings
 SPADES_SETTING(dd_specNames);
@@ -882,6 +884,11 @@ namespace spades {
 				if (p->GetTeamId() < 2) {
 					// player is not spectator
 					DrawHitTestDebugger();
+					
+					if(br_LuckView && p->IsAlive()){
+						luckView->Draw();
+					}
+					
 					if (p->IsAlive()) {
 						DrawJoinedAlivePlayerHUD();
 					} else {

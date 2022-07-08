@@ -38,6 +38,7 @@
 #include "ClientPlayer.h"
 #include "ClientUI.h"
 #include "HurtRingView.h"
+#include "LuckView.h"
 #include "LimboView.h"
 #include "MapView.h"
 #include "PaletteView.h"
@@ -116,7 +117,8 @@ namespace spades {
 		      focalLength(20.f),
 		      targetFocalLength(20.f),
 		      autoFocusEnabled(true),
-
+			  
+			  hitTestSizeToggle(false),
 		      inGameLimbo(false),
 		      fontManager(fontManager),
 		      alertDisappearTime(-10000.f),
@@ -151,6 +153,8 @@ namespace spades {
 			scriptedUI =
 			  Handle<ClientUI>::New(renderer.GetPointerOrNull(), audioDev.GetPointerOrNull(),
 			                        fontManager.GetPointerOrNull(), this);
+
+			luckView = stmp::make_unique<LuckView>(*this, &fontManager->GetGuiFont());
 
 			renderer->SetGameMap(nullptr);
 		}
@@ -258,6 +262,7 @@ namespace spades {
 			centerMessageView.reset();
 			hurtRingView.reset();
 			world.reset();
+			luckView.reset();
 		}
 
 		/** Initiate an initialization which likely to take some time */
