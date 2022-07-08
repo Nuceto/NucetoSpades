@@ -13,8 +13,8 @@ OpenSpades is a compatible client of Ace of Spades 0.75.
 * Open source, and cross platform.
 
 ## What is it NucetoSpades?
-NucetoSpades is an OpenSpades modified by someone who doesn't know C++ ☻ 
-**List of most important mods:**
+NucetoSpades is an OpenSpades modified by someone who doesn't know C++ ☻  
+#### List of most important mods:
 
 * DoctorDank [PUBOvl](https://aloha.pk/t/client-openspades-mod-graphical-effects-pubovl-misc/13239) and mods.
 * Better sound of footSteps.
