@@ -334,7 +334,7 @@ namespace spades {
 			int nextMapShotIndex;
 
 			/** Project the specified world-space position to a screen space. */
-			Vector3 Project(Vector3);
+			bool Project(const Vector3&, Vector3&);
 
 			/** Recalculate `lastViewProjectionScreenMatrix` based on the current value of
 			 * `lastSceneDef`. */
@@ -400,6 +400,8 @@ namespace spades {
 			void TakeMapShot();
 
 			void NetLog(const char *format, ...);
+			
+			static Client *globalInstance; // ADDED: Global instance
 
 		protected:
 			~Client();
@@ -492,6 +494,12 @@ namespace spades {
 			void LocalPlayerHurt(HurtType type, bool sourceGiven, Vector3 source) override;
 			void LocalPlayerBuildError(BuildFailureReason reason) override;
 			// IWorldListener end
+			
+			// ADDED: helper functions
+			static bool AreCheatsEnabled(); // 'cheats', i.e. spectator wallhack or player names
+			static bool WallhackActive();
+			static spades::Vector3 TeamCol(unsigned int teamId);
+			// END OF ADDED
 		};
 	} // namespace client
 } // namespace spades

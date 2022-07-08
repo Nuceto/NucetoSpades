@@ -714,10 +714,16 @@ namespace spades {
 			   Matrix4::Translate(1.0f, -1.0f, 0.0f)) *
 			  lastSceneDef.ToOpenGLProjectionMatrix() * lastSceneDef.ToViewMatrix();
 		}
-
-		Vector3 Client::Project(spades::Vector3 v) {
+		
+		//zerospades
+		bool Client::Project(const spades::Vector3& v, spades::Vector3& out) {
 			Vector4 screenHomV = lastViewProjectionScreenMatrix * v;
-			return screenHomV.GetXYZ() / screenHomV.w;
+			if (screenHomV.z <= 0.0F) {
+				screenHomV.w = 0.001F;
+				return false;
+			}
+			out = screenHomV.GetXYZ() / screenHomV.w;
+			return true;
 		}
 	} // namespace client
 } // namespace spades

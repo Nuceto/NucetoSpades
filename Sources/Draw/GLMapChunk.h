@@ -49,6 +49,10 @@ namespace spades {
 
 				int8_t sx, sy, sz;
 				uint8_t pad3;
+
+				// ADDED: Texture coordinates variables for the VBO
+				float ux, uy;
+				// END OF ADDED
 			};
 
 			GLMapRenderer &renderer;
@@ -70,8 +74,11 @@ namespace spades {
 
 			uint8_t calcAOID(int x, int y, int z, int ux, int uy, int uz, int vx, int vy, int vz);
 
-			void EmitVertex(int aoX, int aoY, int aoZ, int x, int y, int z, int ux, int uy, int vx,
-			                int vy, uint32_t color, int nx, int ny, int nz);
+			void
+			EmitVertex(int aoX, int aoY, int aoZ, int x, int y, int z, int ux, int uy, int vx,
+			           int vy, uint32_t color, int tNumX,
+			           int tNumY, // ADDED: these texture-coords are used if in multi-texture mode
+			           int nx, int ny, int nz);
 
 			bool IsSolid(int x, int y, int z);
 
@@ -91,6 +98,10 @@ namespace spades {
 			void RenderSunlightPass();
 			void RenderDepthPass();
 			void RenderDLightPass(std::vector<GLDynamicLight> lights);
+
+			// ADDED: RenderOutlinesPass declaration
+			void RenderOutlinesPass();
+			// END OF ADDED
 		};
 	} // namespace draw
 } // namespace spades

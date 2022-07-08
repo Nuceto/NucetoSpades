@@ -74,6 +74,10 @@ DEFINE_SPADES_SETTING(cg_playerNames, "2");
 DEFINE_SPADES_SETTING(cg_playerNameX, "0");
 DEFINE_SPADES_SETTING(cg_playerNameY, "0");
 
+// ADDED: Settings
+SPADES_SETTING(dd_specNames);
+// END OF ADDED
+
 namespace spades {
 	namespace client {
 
@@ -298,25 +302,27 @@ namespace spades {
 			if (hottracked) {
 				Player &hottrackedPlayer = std::get<0>(*hottracked);
 
-				Vector3 posxyz = Project(hottrackedPlayer.GetEye());
-				Vector2 pos = {posxyz.x, posxyz.y};
-				char buf[64];
-				if ((int)cg_playerNames == 1) {
-					float dist = (hottrackedPlayer.GetEye() - p.GetEye()).GetLength();
-					int idist = (int)floorf(dist + .5f);
-					sprintf(buf, "%s [%d%s]", hottrackedPlayer.GetName().c_str(), idist,
-					        (idist == 1) ? "block" : "blocks");
-				} else
-					sprintf(buf, "%s", hottrackedPlayer.GetName().c_str());
+				Vector3 posxyz;
+				if (Project(hottrackedPlayer.GetEye(), posxyz)) {
+					Vector2 pos = {posxyz.x, posxyz.y};
+					char buf[64];
+					if ((int)cg_playerNames == 1) {
+						float dist = (hottrackedPlayer.GetEye() - p.GetEye()).GetLength();
+						int idist = (int)floorf(dist + .5f);
+						sprintf(buf, "%s [%d%s]", hottrackedPlayer.GetName().c_str(), idist,
+								(idist == 1) ? "block" : "blocks");
+					} else
+						sprintf(buf, "%s", hottrackedPlayer.GetName().c_str());
 
-				pos.y += (int)cg_playerNameY;
-				pos.x += (int)cg_playerNameX;
+					pos.y += (int)cg_playerNameY;
+					pos.x += (int)cg_playerNameX;
 
-				IFont &font = fontManager->GetGuiFont();
-				Vector2 size = font.Measure(buf);
-				pos.x -= size.x * .5f;
-				pos.y -= size.y;
-				font.DrawShadow(buf, pos, 1.f, MakeVector4(1, 1, 1, 1), MakeVector4(0, 0, 0, 0.5));
+					IFont &font = fontManager->GetGuiFont();
+					Vector2 size = font.Measure(buf);
+					pos.x -= size.x * .5f;
+					pos.y -= size.y;
+					font.DrawShadow(buf, pos, 1.f, MakeVector4(1, 1, 1, 1), MakeVector4(0, 0, 0, 0.5));
+				}	
 			}
 		}
 
@@ -623,11 +629,40 @@ namespace spades {
 		void Client::DrawSpectateHUD() {
 			SPADES_MARK_FUNCTION();
 
+			IFont &font = fontManager->GetGuiFont();
+
+			// ADDED: Draw player names
+			if (dd_specNames && AreCheatsEnabled()) {
+				for (int i = 0; i < world->GetNumPlayerSlots(); ++i) {
+					if (world->GetPlayer(i)) {
+						Player& player = world->GetPlayer(i).value();
+
+						if (!player.IsAlive() || player.IsSpectator() || &player == world->GetPlayer(followedPlayerId))
+							continue;
+
+						Vector3 posxyz;
+						if (Project(player.GetEye(), posxyz)) {
+							if (posxyz.z <= 0) {
+								continue;
+							}
+							Vector2 pos = {posxyz.x, posxyz.y};
+
+							IFont &font = fontManager->GetGuiFont();
+							Vector2 size = font.Measure(player.GetName());
+							pos.x -= size.x * .5f;
+							pos.y -= size.y;
+							font.DrawShadow(player.GetName(), pos, 0.85, MakeVector4(1, 1, 1, 1),
+											MakeVector4(0, 0, 0, 0.5));
+						}
+					}
+				}
+			}
+			// END OF ADDED
+
 			if (cg_hideHud) {
 				return;
 			}
 
-			IFont &font = fontManager->GetGuiFont();
 			float scrWidth = renderer->ScreenWidth();
 
 			float textX = scrWidth - 8.0f;
@@ -642,8 +677,11 @@ namespace spades {
 			};
 
 			if (HasTargetPlayer(GetCameraMode())) {
-				addLine(_Tr("Client", "Following {0}",
-				            world->GetPlayerPersistent(GetCameraTargetPlayerId()).name));
+				// MODIFIED: include player number
+				addLine(_Tr("Client", "Following {0} (#{1})",
+				            world->GetPlayerPersistent(GetCameraTargetPlayerId()).name,
+				            GetCameraTargetPlayerId()));
+				// END OF MODIFIED
 			}
 
 			textY += 10.0f;
