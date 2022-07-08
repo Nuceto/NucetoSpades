@@ -617,15 +617,20 @@ namespace spades {
 				bool sprinting = clientPlayers[p.GetId()]
 				                   ? clientPlayers[p.GetId()]->GetSprintState() > 0.5f
 				                   : false;
-				Handle<IAudioChunk> c = p.GetWade()
-				                          ? audioDevice->RegisterSound(SampleRandomElement(wsnds))
-				                          : audioDevice->RegisterSound(SampleRandomElement(snds));
-				audioDevice->Play(c.GetPointerOrNull(), p.GetOrigin(), AudioParam());
+								   
+				if (p.GetWade()){			  
+					Handle<IAudioChunk> a = audioDevice->RegisterSound(SampleRandomElement(wsnds));
+					audioDevice->Play(a.GetPointerOrNull(), p.GetOrigin(), AudioParam());
+				}
+				
+				Handle<IAudioChunk> b = audioDevice->RegisterSound(SampleRandomElement(snds));
+				AudioParam params;
+				params.volume = 3.f;
+				audioDevice->Play(b.GetPointerOrNull(), p.GetOrigin(), params);
+				
 				if (sprinting && !p.GetWade()) {
-					AudioParam param;
-					param.volume *= clientPlayers[p.GetId()]->GetSprintState();
-					c = audioDevice->RegisterSound(SampleRandomElement(rsnds));
-					audioDevice->Play(c.GetPointerOrNull(), p.GetOrigin(), param);
+					Handle<IAudioChunk> c = audioDevice->RegisterSound(SampleRandomElement(rsnds));
+					audioDevice->Play(c.GetPointerOrNull(), p.GetOrigin(), params);
 				}
 			}
 		}

@@ -18,7 +18,7 @@ NucetoSpades is an OpenSpades modified by someone who doesn't know C++ ☻
 
 * DoctorDank [PUBOvl](https://aloha.pk/t/client-openspades-mod-graphical-effects-pubovl-misc/13239) and mods.
 * Better sound of footSteps.
-* cg_debugHitTest visible modified by [siecvi](https://github.com/siecvi).
+* cg_debugHitTest visible modified by [Siecvi](https://github.com/siecvi).
 * LuckView by [BR](https://github.com/BR-).
 * /analyze on client by [Sov](https://github.com/Autist69420).
 * Keybinds by [Mile](https://github.com/yusufcardinal).
