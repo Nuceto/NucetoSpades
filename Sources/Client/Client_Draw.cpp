@@ -52,6 +52,7 @@
 #include "SmokeSpriteEntity.h"
 #include "TCProgressView.h"
 #include "Tracer.h"
+#include "HitTestDebugger.h"
 
 #include "GameMap.h"
 #include "Grenade.h"
@@ -73,6 +74,9 @@ DEFINE_SPADES_SETTING(cg_hideHud, "0");
 DEFINE_SPADES_SETTING(cg_playerNames, "2");
 DEFINE_SPADES_SETTING(cg_playerNameX, "0");
 DEFINE_SPADES_SETTING(cg_playerNameY, "0");
+
+DEFINE_SPADES_SETTING(n_hitTestSize, "210");
+DEFINE_SPADES_SETTING(n_hitTestTransparency, "1");
 
 // ADDED: Settings
 SPADES_SETTING(dd_specNames);
@@ -594,6 +598,35 @@ namespace spades {
 				DrawHealth();
 			}
 		}
+		
+		void Client::DrawHitTestDebugger() {
+			SPADES_MARK_FUNCTION();
+
+			auto dbg = world->GetHitTestDebugger();
+			if (!dbg)
+				return;
+
+			auto bitmap = dbg->GetBitmap();
+			if (bitmap) {
+				auto img = renderer->CreateImage(*bitmap);
+				debugHitTestImage.Set(img.GetPointerOrNull());
+			}
+
+			if (debugHitTestImage) {
+				renderer->SetColorAlphaPremultiplied(MakeVector4(1, 1, 1, 1));
+				int size = (int) (renderer->ScreenHeight() * 0.4);
+				if (size > renderer->ScreenWidth() * 0.4) size = (int) (renderer->ScreenWidth() * 0.4);
+
+				if(hitTestSizeToggle == true){
+					size = renderer->ScreenHeight() - 10;
+				}else{
+					if (size > (int)n_hitTestSize) size = (int)n_hitTestSize;
+				}
+				renderer->DrawImage(debugHitTestImage,
+					AABB2(renderer->ScreenWidth() - size, renderer->ScreenHeight() - size, size, size),
+					AABB2(128, 512 - 128, 256, 256 - 512)); // flip Y axis
+			}
+		}
 
 		void Client::DrawDeadPlayerHUD() {
 			SPADES_MARK_FUNCTION();
@@ -848,6 +881,7 @@ namespace spades {
 
 				if (p->GetTeamId() < 2) {
 					// player is not spectator
+					DrawHitTestDebugger();
 					if (p->IsAlive()) {
 						DrawJoinedAlivePlayerHUD();
 					} else {

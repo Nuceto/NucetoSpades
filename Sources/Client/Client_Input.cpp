@@ -87,6 +87,8 @@ DEFINE_SPADES_SETTING(cg_alerts, "1");
 SPADES_SETTING(cg_manualFocus);
 DEFINE_SPADES_SETTING(cg_keyAutoFocus, "MiddleMouseButton");
 
+DEFINE_SPADES_SETTING(n_hitTestKey, "F8");
+
 namespace spades {
 	namespace client {
 
@@ -287,6 +289,18 @@ namespace spades {
 					}
 				}
 				return;
+			}
+			
+			if (CheckKey(n_hitTestKey, name) && down) {
+				Handle<IAudioChunk> chunk =
+				audioDevice->RegisterSound("Sounds/Misc/OpenMap.opus");
+				audioDevice->PlayLocal(chunk.GetPointerOrNull(), AudioParam());
+
+                if (hitTestSizeToggle == true) {
+					hitTestSizeToggle = false;
+				} else {
+					hitTestSizeToggle = true;
+				}			
 			}
 
 			if (name == "Escape") {
