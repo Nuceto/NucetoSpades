@@ -5,12 +5,28 @@
 
 [Official website](https://openspades.yvt.jp) — [Download](https://github.com/yvt/openspades/releases) — [Community](https://buildandshoot.com) — [Trello board](https://trello.com/b/3rfpvODj/openspades-roadmap)
 
-## What is it?
+## What is it OpenSpades?
 OpenSpades is a compatible client of Ace of Spades 0.75.
 
 * Can connect to a vanilla/pyspades/pysnip server.
 * Uses OpenGL/AL for better experience.
 * Open source, and cross platform.
+
+## What is it NucetoSpades?
+NucetoSpades is an OpenSpades modified by someone who doesn't know C++ ☻
+List of most important mods:
+
+* DoctorDank [PUBOvl] (https://aloha.pk/t/client-openspades-mod-graphical-effects-pubovl-misc/13239) and mods.
+* Better sound of footSteps.
+* cg_debugHitTest visible modified by [siecvi](https://github.com/siecvi).
+* LuckView by [BR] (https://github.com/BR-).
+* /analyze on client by [Sov](https://github.com/Autist69420).
+* Keybinds by [Mile] (https://github.com/yusufcardinal).
+* Killfeed with new images created by Skyte.
+* Modifiable target.
+* Gui customization.
+* Color chat mentions.
+
 
 ## How to Build/Install?
 **Before you start:** In case you're having issues to build OpenSpades, it may be because this README file is outdated, if so:
