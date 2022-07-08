@@ -62,6 +62,8 @@ SPADES_SETTING(cg_shake);
 
 SPADES_SETTING(cg_holdAimDownSight);
 
+DEFINE_SPADES_SETTING(sov_analyze, "0");
+
 namespace spades {
 	namespace client {
 
@@ -1023,6 +1025,32 @@ namespace spades {
 
 			if (&by == world->GetLocalPlayer()) {
 				net->SendHit(hurtPlayer.GetId(), type);
+				
+				if (sov_analyze) {
+					char buf[64];
+					std::string str;
+					std::string bodyPart;
+					switch (type) {
+						case HitTypeTorso: bodyPart = "Body"; break;
+						case HitTypeHead: bodyPart = "Head"; break;
+						case HitTypeArms:
+						case HitTypeLegs: bodyPart = "Limb"; break;
+						default: bodyPart = "Body"; break;
+					}
+					auto name = ChatWindow::TeamColorMessage(hurtPlayer.GetName(), hurtPlayer.GetTeamId());
+					int dist = (int)floorf((hurtPlayer.GetEye() - by.GetEye()).GetLength() + 0.5F);
+					int dmg;
+					if(!by.IsToolWeapon()){
+						dmg = 49;	
+					}else{
+						dmg = by.GetWeapon().GetDamage(type, 0.0F);
+					}
+					sprintf(buf, "Bullet hit %s dist: %d blocks %s(-%d)", name.c_str(), dist, bodyPart.c_str(), dmg);
+					str += buf;
+
+					chatWindow->AddMessage(str);
+					scriptedUI->RecordChatLog(str, MakeVector4(1.f, 1.f, 1.f, 1.f));
+				}
 
 				if (type == HitTypeHead && !hitScanState.hasPlayedHeadshotSound) {
 					Handle<IAudioChunk> c =
