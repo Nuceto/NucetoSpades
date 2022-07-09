@@ -262,6 +262,12 @@ namespace spades {
 				if (hitFeedbackIconState < 0.f)
 					hitFeedbackIconState = 0.f;
 			}
+			
+			if (targetfirestate > 0.f) {
+				targetfirestate -= dt * 4.f;
+				if (targetfirestate < 0.f)
+					targetfirestate = 0.f;
+			}
 
 			if (time > lastPosSentTime + 1.f && world->GetLocalPlayer()) {
 				stmp::optional<Player &> p = world->GetLocalPlayer();
@@ -644,6 +650,7 @@ namespace spades {
 
 			if (&p == world->GetLocalPlayer()) {
 				localFireVibrationTime = time;
+				targetfirestate = 1.f;
 			}
 
 			clientPlayers.at(p.GetId())->FiredWeapon();
@@ -948,7 +955,7 @@ namespace spades {
 			if(!inp.secondary && !cg_killFeedImg && killer.IsToolWeapon() && killer.IsAlive()){
 				s += "[NoScope] ";
 			}
-
+			
 			if (&killer != &victim) {
 				s += ChatWindow::TeamColorMessage(victim.GetName(), victim.GetTeamId());
 			}

@@ -206,6 +206,7 @@ namespace spades {
 			void KickCamera(float strength);
 
 			float hitFeedbackIconState;
+			float targetfirestate;
 			bool hitFeedbackFriendly;
 
 			// manual focus
@@ -388,6 +389,7 @@ namespace spades {
 			void DrawHealth();
 			void DrawAlert();
 			void DrawDebugAim();
+			void DrawTarget();
 			void DrawStats();
 			void DrawHitTestDebugger();
 

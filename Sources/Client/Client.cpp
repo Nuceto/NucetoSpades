@@ -113,6 +113,7 @@ namespace spades {
 		      scoreboardVisible(false),
 		      flashlightOn(false),
 		      hitFeedbackIconState(0.f),
+			  targetfirestate(0.f),
 		      hitFeedbackFriendly(false),
 		      focalLength(20.f),
 		      targetFocalLength(20.f),
