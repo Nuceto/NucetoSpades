@@ -75,6 +75,7 @@ DEFINE_SPADES_SETTING(cg_hideHud, "0");
 DEFINE_SPADES_SETTING(cg_playerNames, "2");
 DEFINE_SPADES_SETTING(cg_playerNameX, "0");
 DEFINE_SPADES_SETTING(cg_playerNameY, "0");
+DEFINE_SPADES_SETTING(n_hudTransparency, "1");
 
 DEFINE_SPADES_SETTING(n_Target, "0");
 DEFINE_SPADES_SETTING(n_TargetOnScope, "0");
@@ -1042,24 +1043,28 @@ namespace spades {
 
 			char buf[256];
 			std::string str;
+			std::string fpsStr;
+			std::string upsStr;
+			std::string pingStr;
+			std::string updownStr;
 
 			{
 				auto fps = fpsCounter.GetFps();
 				if (fps == 0.0)
-					str += "--.-- fps";
+					fpsStr += "--.-- fps";
 				else {
 					sprintf(buf, "%.02f fps", fps);
-					str += buf;
+					fpsStr += buf;
 				}
 			}
 			{
 				// Display world updates per second
 				auto ups = upsCounter.GetFps();
 				if (ups == 0.0)
-					str += ", --.-- ups";
+					upsStr += ", --.-- ups";
 				else {
 					sprintf(buf, ", %.02f ups", ups);
-					str += buf;
+					upsStr += buf;
 				}
 			}
 
@@ -1067,15 +1072,53 @@ namespace spades {
 				auto ping = net->GetPing();
 				auto upbps = net->GetUplinkBps();
 				auto downbps = net->GetDownlinkBps();
-				sprintf(buf, ", ping: %dms, up/down: %.02f/%.02fkbps", ping, upbps / 1000.0,
+				sprintf(buf, ", ping: %dms, ", ping,
 				        downbps / 1000.0);
-				str += buf;
+				pingStr += buf;
+				
+				sprintf(buf, "up/down: %.02f/%.02fkbps",upbps / 1000.0, downbps / 1000.0);
+				updownStr += buf;
+			}
+			
+			auto fps = fpsCounter.GetFps();
+			Vector4 fpsColor;
+			if(fps >= 60){
+				fpsColor = Vector4(0.f, 1.f, 0.f, (float)n_hudTransparency);
+		    }else if(fps >= 20 && fps < 60){
+				fpsColor = Vector4(1.f, 1.f, 0.f, (float)n_hudTransparency);	
+			}else{
+				fpsColor = Vector4(1.f, 0.f, 0.f, (float)n_hudTransparency);
+			}
+			
+			auto ups = upsCounter.GetFps();
+			Vector4 upsColor;
+			if(ups >= 9.00){
+				upsColor = Vector4(0.f, 1.f, 0.f, (float)n_hudTransparency);
+		    }else if(ups >= 8 && ups < 9){	
+				upsColor = Vector4(1.f, 1.f, 0.f, (float)n_hudTransparency);	
+			}else{	
+				upsColor = Vector4(1.f, 0.f, 0.f, (float)n_hudTransparency);
+			}
+			
+			auto ping = net->GetPing();
+			Vector4 pingColor;
+			if(ping <= 100){	
+				pingColor = Vector4(0.f, 1.f, 0.f, (float)n_hudTransparency);
+		    }else if(ping >= 101 && ping < 290){
+				pingColor = Vector4(1.f, 1.f, 0.f, (float)n_hudTransparency);	
+			}else{	
+				pingColor = Vector4(1.f, 0.f, 0.f, (float)n_hudTransparency);
 			}
 
 			float scrWidth = renderer->ScreenWidth();
 			float scrHeight = renderer->ScreenHeight();
 			IFont &font = fontManager->GetGuiFont();
 			float margin = 5.f;
+
+			str += fpsStr;
+			str += upsStr;
+			str += pingStr;
+			str += updownStr;
 
 			auto size = font.Measure(str);
 			size += Vector2(margin * 2.f, margin * 2.f);
@@ -1084,8 +1127,17 @@ namespace spades {
 
 			renderer->SetColorAlphaPremultiplied(Vector4(0.f, 0.f, 0.f, 0.5f));
 			renderer->DrawImage(nullptr, AABB2(pos.x, pos.y, size.x, size.y));
-			font.DrawShadow(str, pos + Vector2(margin, margin), 1.f, Vector4(1.f, 1.f, 1.f, 1.f),
-			                Vector4(0.f, 0.f, 0.f, 0.5f));
+
+			font.DrawShadow(fpsStr, pos + Vector2(margin, margin), 1.f, fpsColor, Vector4(0.f, 0.f, 0.f, 0.5f));
+			
+			font.DrawShadow(upsStr, pos + Vector2(margin, margin) + 
+			Vector2(font.Measure(fpsStr).x, 0.f), 1.f, upsColor, Vector4(0.f, 0.f, 0.f, 0.5f));
+			
+			font.DrawShadow(pingStr, pos + Vector2(margin, margin) +
+			Vector2(font.Measure(fpsStr).x + font.Measure(upsStr).x, 0.f), 1.f, pingColor, Vector4(0.f, 0.f, 0.f, 0.5f));
+			
+			font.DrawShadow(updownStr, pos + Vector2(margin, margin) + Vector2(font.Measure(fpsStr).x + 
+			font.Measure(upsStr).x + font.Measure(pingStr).x, 0.f), 1.f, Vector4(1.f, 1.f, 1.f, 1.f), Vector4(0.f, 0.f, 0.f, 0.5f));
 		}
 
 		void Client::Draw2D() {
