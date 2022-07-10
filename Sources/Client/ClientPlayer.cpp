@@ -58,6 +58,10 @@ DEFINE_SPADES_SETTING(cg_viewWeaponY, "0");
 DEFINE_SPADES_SETTING(cg_viewWeaponZ, "0");
 DEFINE_SPADES_SETTING(cg_debugToolSkinAnchors, "0");
 
+SPADES_SETTING(r_dlights);
+SPADES_SETTING(v_laser);
+DEFINE_SPADES_SETTING(v_laserColour, "r");
+
 namespace spades {
 	namespace client {
 
@@ -669,16 +673,12 @@ namespace spades {
 			sandboxedRenderer->SetAllowDepthHack(true);
 
 			// no flashlight if spectating other players while dead
-			if (client.flashlightOn && world->GetLocalPlayer()->IsAlive()) {
-				float brightness = client.time - client.flashlightOnTime;
-				brightness = 1.f - expf(-brightness * 5.f);
-				brightness *= r_hdr ? 3.0f : 1.5f;
-
+			if (client.flashlightState == 1 && world->GetLocalPlayer()->IsAlive() && r_dlights) {
 				// add flash light
 				DynamicLightParam light;
 				Handle<IImage> image = renderer.RegisterImage("Gfx/Spotlight.jpg");
 				light.origin = (eyeMatrix * MakeVector3(0, -0.05f, -0.1f)).GetXYZ();
-				light.color = MakeVector3(1.0f, 0.7f, 0.5f) * brightness;
+				light.color = MakeVector3(1, 0.8f, 0.6f) * 1.5f;
 				light.radius = 60.f;
 				light.type = DynamicLightTypeSpotlight;
 				light.spotAngle = 90.f * M_PI / 180.f;
@@ -691,6 +691,132 @@ namespace spades {
 				light.type = DynamicLightTypePoint;
 				light.image = NULL;
 				renderer.AddLight(light);
+			}
+			
+			else if (client.flashlightState == 2){
+				Vector3 muzzle = p.GetEye();
+				muzzle += p.GetFront() * 0.02f;
+
+				Handle<GameMap> map = world->GetMap();
+
+				Vector3 dir = p.GetFront();
+				//Chameleon: sync visual weapon with hit location.
+				//synced when lim(weapXY -> 0)
+				if (p.IsLocalPlayer())
+				{
+					if (p.GetWeaponInput().secondary)
+					{
+						dir.x -= p.GetRight().x*viewWeaponOffset.x;
+						dir.y -= p.GetRight().y*viewWeaponOffset.x;
+						dir.z -= viewWeaponOffset.z*(abs(p.GetFront().z) + 1);
+					}
+					else
+					{
+						dir.x -= viewWeaponOffset.x*p.GetRight().x*0.1f;
+						dir.y -= viewWeaponOffset.x*p.GetRight().y*0.1f;
+						dir.z -= viewWeaponOffset.z*0.1f;
+					}
+				}
+				dir = dir.Normalize();
+
+				GameMap::RayCastResult mapResult;
+				mapResult = world->GetMap()->CastRay2(p.GetEye(),
+					dir,
+					500);
+
+				Player *hitPlayer = NULL;
+				float hitPlayerDistance = 0.f;
+				
+				World &wrld = player.GetWorld();
+				for (int i = 0; i < wrld.GetNumPlayerSlots(); i++) {
+					auto maybeOther = wrld.GetPlayer(i);
+					if (maybeOther == &p || !maybeOther)
+						continue;
+
+					Player &other = maybeOther.value();
+					if (&other == &p || &other == NULL)
+						continue;
+					if (&other == &p || !other.IsAlive() || other.GetTeamId() >= 2)
+						continue;
+					// quickly reject players unlikely to be hit
+					if (!other.RayCastApprox(muzzle, dir))
+						continue;
+
+					Player::HitBoxes hb = other.GetHitBoxes();
+					Vector3 hitPos;
+
+					if (hb.head.RayCast(muzzle, dir, &hitPos)) {
+						float dist = (hitPos - muzzle).GetLength();
+						if (hitPlayer == NULL ||
+							dist < hitPlayerDistance){
+							hitPlayer = &other;
+							hitPlayerDistance = dist;
+						}
+					}
+					if (hb.torso.RayCast(muzzle, dir, &hitPos)) {
+						float dist = (hitPos - muzzle).GetLength();
+						if (hitPlayer == NULL ||
+							dist < hitPlayerDistance){
+							hitPlayer = &other;
+							hitPlayerDistance = dist;
+						}
+					}
+				}
+
+				Vector3 finalHitPos;
+				finalHitPos = muzzle + dir * 134.f;
+
+				if (hitPlayer == nullptr && !mapResult.hit) {
+					// might hit water surface.
+				}
+
+				if (mapResult.hit && (mapResult.hitPos - muzzle).GetLength() < 134.f &&
+					(hitPlayer == NULL || (mapResult.hitPos - muzzle).GetLength() < hitPlayerDistance))
+				{
+					finalHitPos = mapResult.hitPos;
+				}
+				else if (hitPlayer != NULL)
+				{
+					if (hitPlayerDistance < 134.f)
+					{
+						finalHitPos = muzzle + dir * hitPlayerDistance;
+					}
+				}
+
+				finalHitPos = finalHitPos - dir*0.1f;
+
+				Vector3 colour;
+				IImage *image;
+				if ((std::string)v_laserColour == "g")
+				{
+					colour = MakeVector3(0, 255, 0);
+					image = client.GetRenderer().RegisterImage("Gfx/Weapons/LaserG.tga").GetPointerOrNull();
+				}
+				else if ((std::string)v_laserColour == "b")
+				{
+					colour = MakeVector3(0, 0, 255);
+					image = client.GetRenderer().RegisterImage("Gfx/Weapons/LaserB.tga").GetPointerOrNull();
+				}	
+				else
+				{
+					colour = MakeVector3(255, 0, 0);
+					image = client.GetRenderer().RegisterImage("Gfx/Weapons/LaserR.tga").GetPointerOrNull();
+				}
+
+				float factor = ((muzzle - finalHitPos).GetLength()/128.f + 1.f)/2.f;				
+
+				renderer.SetColorAlphaPremultiplied(Vector4(colour.x/4, colour.y/4, colour.z/4, 0));
+				renderer.AddSprite(*image, finalHitPos, factor*0.5f, 0);
+
+				if (r_dlights && (int)v_laser == 2)
+				{
+					DynamicLightParam light;
+					light.origin = finalHitPos-dir*0.1f;
+					light.color = colour*factor;
+					light.radius = factor;
+					light.type = DynamicLightTypePoint;
+					renderer.AddLight(light);
+				}
 			}
 
 			Vector3 leftHand, rightHand;

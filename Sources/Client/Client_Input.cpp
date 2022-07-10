@@ -100,6 +100,8 @@ DEFINE_SPADES_SETTING(ds_macrobind8, "");
 DEFINE_SPADES_SETTING(ds_macrobind9, "");
 DEFINE_SPADES_SETTING(ds_macrobind10, "");
 
+DEFINE_SPADES_SETTING(v_laser, "0");
+
 namespace spades {
 	namespace client {
 
@@ -650,14 +652,19 @@ namespace spades {
 						TakeMapShot();
 					} else if (CheckKey(cg_keyFlashlight, name) && down) {
 						// spectators and dead players should not be able to toggle the flashlight
-						if (world->GetLocalPlayer()->IsSpectator() ||
-						    !world->GetLocalPlayer()->IsAlive())
+						if (world->GetLocalPlayer()->IsSpectator() || !world->GetLocalPlayer()->IsAlive())
 							return;
-						flashlightOn = !flashlightOn;
-						flashlightOnTime = time;
+						
+						if (flashlightState == 0){
+							flashlightState = 1;
+						}else if (v_laser && flashlightState == 1){
+							flashlightState = 2;
+						}else{
+							flashlightState = 0;
+						}
 						Handle<IAudioChunk> chunk =
-						  audioDevice->RegisterSound("Sounds/Player/Flashlight.opus");
-						audioDevice->PlayLocal(chunk.GetPointerOrNull(), AudioParam());
+						audioDevice->RegisterSound("Sounds/Player/Flashlight.opus");
+						audioDevice->PlayLocal(chunk.GetPointerOrNull(), AudioParam());	
 					} else if (CheckKey(cg_keyAutoFocus, name) && down && (int)cg_manualFocus) {
 						autoFocusEnabled = true;
 					} else if (down) {

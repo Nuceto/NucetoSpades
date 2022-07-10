@@ -111,7 +111,7 @@ namespace spades {
 		      grenadeVibration(0.f),
 		      grenadeVibrationSlow(0.f),
 		      scoreboardVisible(false),
-		      flashlightOn(false),
+			  flashlightState(0),
 		      hitFeedbackIconState(0.f),
 			  targetfirestate(0.f),
 		      hitFeedbackFriendly(false),
@@ -176,7 +176,6 @@ namespace spades {
 			lastHurtTime = -100.f;
 			hurtRingView->ClearAll();
 			scoreboardVisible = false;
-			flashlightOn = false;
 
 			clientPlayers.clear();
 

@@ -200,8 +200,7 @@ namespace spades {
 			float grenadeVibration;
 			float grenadeVibrationSlow;
 			bool scoreboardVisible;
-			bool flashlightOn;
-			float flashlightOnTime;
+			int flashlightState;
 			CoherentNoiseSampler1D coherentNoiseSamplers[3];
 			void KickCamera(float strength);
 

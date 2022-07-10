@@ -567,9 +567,9 @@ namespace spades {
 						float y = scrHeight - 16.f - iconHeight;
 
 						if (clip >= i + 1) {
-							renderer->SetColorAlphaPremultiplied(MakeVector4(1, 1, 1, 1));
+							renderer->SetColorAlphaPremultiplied(MakeVector4(1, 1, 1, (float)n_hudTransparency));
 						} else {
-							renderer->SetColorAlphaPremultiplied(MakeVector4(0.4, 0.4, 0.4, 1));
+							renderer->SetColorAlphaPremultiplied(MakeVector4(0.4, 0.4, 0.4, (float)n_hudTransparency));
 						}
 
 						renderer->DrawImage(ammoIcon, AABB2(x, y, iconWidth, iconHeight));
@@ -589,7 +589,7 @@ namespace spades {
 					}
 				}
 
-				Vector4 numberColor = {1, 1, 1, 1};
+				Vector4 numberColor = {1, 1, 1, (float)n_hudTransparency};
 
 				if (stockNum == 0) {
 					numberColor.y = 0.3f;
@@ -605,7 +605,7 @@ namespace spades {
 				Vector2 size = font.Measure(stockStr);
 				Vector2 pos = MakeVector2(scrWidth - 16.f, scrHeight - 16.f - iconHeight);
 				pos -= size;
-				font.DrawShadow(stockStr, pos, 1.f, numberColor, MakeVector4(0, 0, 0, 0.5));
+				font.DrawShadow(stockStr, pos, 1.f, numberColor, MakeVector4(0, 0, 0, 0.5*(float)n_hudTransparency));
 
 				// draw "press ... to reload"
 				{
@@ -672,7 +672,7 @@ namespace spades {
 			}
 
 			if (debugHitTestImage) {
-				renderer->SetColorAlphaPremultiplied(MakeVector4(1, 1, 1, 1));
+				renderer->SetColorAlphaPremultiplied(MakeVector4(1, 1, 1, (float)n_hitTestTransparency));
 				int size = (int) (renderer->ScreenHeight() * 0.4);
 				if (size > renderer->ScreenWidth() * 0.4) size = (int) (renderer->ScreenWidth() * 0.4);
 
@@ -901,7 +901,7 @@ namespace spades {
 
 			std::string str = std::to_string(p.GetHealth());
 
-			Vector4 numberColor = {1, 1, 1, 1};
+			Vector4 numberColor = {1, 1, 1, (float)n_hudTransparency};
 
 			if (p.GetHealth() == 0) {
 				numberColor.y = 0.3f;
@@ -914,7 +914,7 @@ namespace spades {
 			Vector2 size = font.Measure(str);
 			Vector2 pos = MakeVector2(16.f, scrHeight - 16.f);
 			pos.y -= size.y;
-			font.DrawShadow(str, pos, 1.f, numberColor, MakeVector4(0, 0, 0, 0.5));
+			font.DrawShadow(str, pos, 1.f, numberColor, MakeVector4(0, 0, 0, 0.5*(float)n_hudTransparency));
 		}
 
 		void Client::Draw2DWithWorld() {
@@ -1125,19 +1125,22 @@ namespace spades {
 
 			auto pos = (Vector2(scrWidth, scrHeight) - size) * Vector2(0.5f, 1.f);
 
-			renderer->SetColorAlphaPremultiplied(Vector4(0.f, 0.f, 0.f, 0.5f));
+			renderer->SetColorAlphaPremultiplied(Vector4(0.f, 0.f, 0.f, 0.5f * (float)n_hudTransparency));
 			renderer->DrawImage(nullptr, AABB2(pos.x, pos.y, size.x, size.y));
 
-			font.DrawShadow(fpsStr, pos + Vector2(margin, margin), 1.f, fpsColor, Vector4(0.f, 0.f, 0.f, 0.5f));
+			font.DrawShadow(fpsStr, pos + Vector2(margin, margin), 
+			1.f, fpsColor, Vector4(0.f, 0.f, 0.f, 0.5f* (float)n_hudTransparency));
 			
 			font.DrawShadow(upsStr, pos + Vector2(margin, margin) + 
-			Vector2(font.Measure(fpsStr).x, 0.f), 1.f, upsColor, Vector4(0.f, 0.f, 0.f, 0.5f));
+			Vector2(font.Measure(fpsStr).x, 0.f), 1.f, upsColor, Vector4(0.f, 0.f, 0.f, 0.5f* (float)n_hudTransparency));
 			
 			font.DrawShadow(pingStr, pos + Vector2(margin, margin) +
-			Vector2(font.Measure(fpsStr).x + font.Measure(upsStr).x, 0.f), 1.f, pingColor, Vector4(0.f, 0.f, 0.f, 0.5f));
+			Vector2(font.Measure(fpsStr).x + font.Measure(upsStr).x, 0.f), 
+			1.f, pingColor, Vector4(0.f, 0.f, 0.f, 0.5f* (float)n_hudTransparency));
 			
 			font.DrawShadow(updownStr, pos + Vector2(margin, margin) + Vector2(font.Measure(fpsStr).x + 
-			font.Measure(upsStr).x + font.Measure(pingStr).x, 0.f), 1.f, Vector4(1.f, 1.f, 1.f, 1.f), Vector4(0.f, 0.f, 0.f, 0.5f));
+			font.Measure(upsStr).x + font.Measure(pingStr).x, 0.f), 1.f, 
+			Vector4(1.f, 1.f, 1.f, (float)n_hudTransparency), Vector4(0.f, 0.f, 0.f, 0.5f* (float)n_hudTransparency));
 		}
 
 		void Client::Draw2D() {
