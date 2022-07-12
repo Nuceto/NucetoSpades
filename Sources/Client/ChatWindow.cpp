@@ -302,7 +302,9 @@ namespace spades {
 					goto endDrawLine;
 				}
 
+
 				brightShadowColor.w = shadowColor.w = .8f * fade;
+				IImage *img = renderer->RegisterImage("Gfx/White.tga").GetPointerOrNull();
 
 				color.w = fade;
 				for (size_t i = 0; i < msg.size(); i++) {
@@ -317,6 +319,10 @@ namespace spades {
 								colorpm.x *= colorpm.w;
 								colorpm.y *= colorpm.w;
 								colorpm.z *= colorpm.w;
+
+								renderer->SetColorAlphaPremultiplied(Vector4(0, 0, 0, 0.3f * fade));
+								renderer->DrawImage(img, AABB2(tx + winX, ty + winY, kill->GetWidth(), lHeight));
+
 								renderer->SetColorAlphaPremultiplied(colorpm);
 								renderer->DrawImage(kill, MakeVector2(tx + winX, ty + winY));
 								tx += kill->GetWidth();
@@ -338,8 +344,12 @@ namespace spades {
 
 						float luminosity = color.x + color.y + color.z;
 
+						renderer->SetColorAlphaPremultiplied(Vector4(0, 0, 0, 0.3f * fade));
+						renderer->DrawImage(img, AABB2(tx + winX, ty + winY, font->Measure(ch).x, lHeight));
+
 						font->DrawShadow(ch, MakeVector2(tx + winX, ty + winY), 1.f, color,
 						                 luminosity > 0.9f ? shadowColor : brightShadowColor);
+						
 						tx += font->Measure(ch).x;
 					}
 				}
