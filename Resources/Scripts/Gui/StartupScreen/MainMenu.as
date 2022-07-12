@@ -70,9 +70,7 @@ namespace spades {
                 @button.Activated
                 = spades::ui::EventHandler(this.OnBypassStartupWindowCheckChanged);
 
-                if (ui.isPrereleaseVersion) {
-                    button.Visible = false;
-                }
+                button.Visible = true;
             }
             {
                 UpdateCheckView view(Manager, ui.helper.PackageUpdateManager);

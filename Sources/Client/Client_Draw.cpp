@@ -94,6 +94,7 @@ DEFINE_SPADES_SETTING(n_TargetLinesDynamicMultiplier, "10");
 DEFINE_SPADES_SETTING(n_hitTestSize, "210");
 DEFINE_SPADES_SETTING(n_hitTestTransparency, "1");
 DEFINE_SPADES_SETTING(br_LuckView, "1");
+DEFINE_SPADES_SETTING(n_StatsColor, "0");
 
 // ADDED: Settings
 SPADES_SETTING(dd_specNames);
@@ -1127,20 +1128,26 @@ namespace spades {
 
 			renderer->SetColorAlphaPremultiplied(Vector4(0.f, 0.f, 0.f, 0.5f * (float)n_hudTransparency));
 			renderer->DrawImage(nullptr, AABB2(pos.x, pos.y, size.x, size.y));
-
-			font.DrawShadow(fpsStr, pos + Vector2(margin, margin), 
-			1.f, fpsColor, Vector4(0.f, 0.f, 0.f, 0.5f* (float)n_hudTransparency));
 			
-			font.DrawShadow(upsStr, pos + Vector2(margin, margin) + 
-			Vector2(font.Measure(fpsStr).x, 0.f), 1.f, upsColor, Vector4(0.f, 0.f, 0.f, 0.5f* (float)n_hudTransparency));
+			if(n_StatsColor){
+				font.DrawShadow(fpsStr, pos + Vector2(margin, margin), 
+				1.f, fpsColor, Vector4(0.f, 0.f, 0.f, 0.5f* (float)n_hudTransparency));
 			
-			font.DrawShadow(pingStr, pos + Vector2(margin, margin) +
-			Vector2(font.Measure(fpsStr).x + font.Measure(upsStr).x, 0.f), 
-			1.f, pingColor, Vector4(0.f, 0.f, 0.f, 0.5f* (float)n_hudTransparency));
+				font.DrawShadow(upsStr, pos + Vector2(margin, margin) + 
+				Vector2(font.Measure(fpsStr).x, 0.f), 1.f, upsColor, Vector4(0.f, 0.f, 0.f, 0.5f* (float)n_hudTransparency));
 			
-			font.DrawShadow(updownStr, pos + Vector2(margin, margin) + Vector2(font.Measure(fpsStr).x + 
-			font.Measure(upsStr).x + font.Measure(pingStr).x, 0.f), 1.f, 
-			Vector4(1.f, 1.f, 1.f, (float)n_hudTransparency), Vector4(0.f, 0.f, 0.f, 0.5f* (float)n_hudTransparency));
+				font.DrawShadow(pingStr, pos + Vector2(margin, margin) +
+				Vector2(font.Measure(fpsStr).x + font.Measure(upsStr).x, 0.f), 
+				1.f, pingColor, Vector4(0.f, 0.f, 0.f, 0.5f* (float)n_hudTransparency));
+			
+				font.DrawShadow(updownStr, pos + Vector2(margin, margin) + Vector2(font.Measure(fpsStr).x + 
+				font.Measure(upsStr).x + font.Measure(pingStr).x, 0.f), 1.f, 
+				Vector4(1.f, 1.f, 1.f, (float)n_hudTransparency), Vector4(0.f, 0.f, 0.f, 0.5f* (float)n_hudTransparency));
+			}else{
+				font.DrawShadow(str, pos + Vector2(margin, margin), 
+				1.f, Vector4(1.f, 1.f, 1.f, (float)n_hudTransparency),
+				Vector4(0.f, 0.f, 0.f, 0.5f* (float)n_hudTransparency));	
+			}
 		}
 
 		void Client::Draw2D() {
