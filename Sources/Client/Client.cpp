@@ -80,6 +80,9 @@ DEFINE_SPADES_SETTING(cg_outlineStrength, "2");
 DEFINE_SPADES_SETTING(s_volume, "100");
 // END OF ADDED
 
+DEFINE_SPADES_SETTING(n_mention, "0");
+DEFINE_SPADES_SETTING(n_mentionWord, "PutYourNameHereInlowerCase");
+
 
 namespace spades {
 	namespace client {
@@ -685,6 +688,13 @@ namespace spades {
 				s += ChatWindow::TeamColorMessage(p.GetName(), p.GetTeamId());
 				s += ": ";
 				s += msg;
+				
+				std::string m = " -> Mention";
+				size_t w = msg.find(n_mentionWord);
+				if (w != std::string::npos && n_mention){
+				s += ChatWindow::ColoredMessage(m, MsgColorGreen);
+				}
+				
 				chatWindow->AddMessage(s);
 			}
 			{
@@ -737,6 +747,13 @@ namespace spades {
 					centerMessageView->AddMessage(msg.substr(3));
 					return;
 				}
+			}
+			
+			//zerospades
+			if (msg.substr(0, 8) == "PM from ") {
+				std::string s = "PM from " + msg.substr(8);
+				chatWindow->AddMessage(ChatWindow::ColoredMessage(s, MsgColorGreen));
+				return;
 			}
 
 			chatWindow->AddMessage(msg);
