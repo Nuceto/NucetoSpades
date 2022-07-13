@@ -21,19 +21,19 @@ std::string VersionInfo::GetVersionInfo() {
 	std::string windowsVersion;
 
 	if (IsWindowsXPOrGreater() && !IsWindowsVistaOrGreater()) {
-		windowsVersion = "Windows XP";
+		windowsVersion = "Windows XP | NucetoSpades 0.5 | https://github.com/Nuceto/NucetoSpades/releases";
 	} else if (IsWindowsVistaOrGreater() && !IsWindows7OrGreater()) {
-		windowsVersion = "Windows Vista";
+		windowsVersion = "Windows Vista | NucetoSpades 0.5 | https://github.com/Nuceto/NucetoSpades/releases";
 	} else if (IsWindows7OrGreater() && !IsWindows8OrGreater()) {
-		windowsVersion = "Windows 7";
+		windowsVersion = "Windows 7 | NucetoSpades 0.5 | https://github.com/Nuceto/NucetoSpades/releases";
 	} else if (IsWindows8OrGreater() && !IsWindows8Point1OrGreater()) {
-		windowsVersion = "Windows 8";
+		windowsVersion = "Windows 8 | NucetoSpades 0.5 | https://github.com/Nuceto/NucetoSpades/releases";
 	} else if (IsWindows8Point1OrGreater()) {
-		windowsVersion = "Windows 8.1";
+		windowsVersion = "Windows 8.1 | NucetoSpades 0.5 | https://github.com/Nuceto/NucetoSpades/releases";
 	} else {
 		// Default to Windows 10
 		// See https://github.com/yvt/openspades/pull/528 for reason.
-		windowsVersion = "Windows 10";
+		windowsVersion = "Windows 10 | NucetoSpades 0.5 | https://github.com/Nuceto/NucetoSpades/releases";
 	}
 
 	// Might be a greater version, but the new Microsoft
@@ -55,6 +55,6 @@ std::string VersionInfo::GetVersionInfo() {
 #elif defined(__HAIKU__)
 	return std::string("Haiku");
 #else
-	return std::string("Unknown OS");
+	return std::string("Unknown OS | NucetoSpades 0.5 | https://github.com/Nuceto/NucetoSpades/releases";
 #endif
 }
