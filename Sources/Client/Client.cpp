@@ -686,13 +686,16 @@ namespace spades {
 					//! The extra whitespace is not a typo.
 					s = _Tr("Client", "[Global] ");
 				s += ChatWindow::TeamColorMessage(p.GetName(), p.GetTeamId());
+				if(!global){
+					s += ChatWindow::TeamCoords(p.GetPosition().x, p.GetPosition().y);
+				}
 				s += ": ";
 				s += msg;
 				
 				std::string m = " -> Mention";
 				size_t w = msg.find(n_mentionWord);
 				if (w != std::string::npos && n_mention){
-				s += ChatWindow::ColoredMessage(m, MsgColorGreen);
+					s += ChatWindow::ColoredMessage(m, MsgColorGreen);
 				}
 				
 				chatWindow->AddMessage(s);

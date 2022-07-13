@@ -69,6 +69,7 @@ SPADES_SETTING(cg_keyJump);
 SPADES_SETTING(cg_keyAttack);
 SPADES_SETTING(cg_keyAltAttack);
 SPADES_SETTING(cg_keyCrouch);
+SPADES_SETTING(cg_minimapSize);
 DEFINE_SPADES_SETTING(cg_screenshotFormat, "jpeg");
 DEFINE_SPADES_SETTING(cg_stats, "0");
 DEFINE_SPADES_SETTING(cg_hideHud, "0");
@@ -95,6 +96,7 @@ DEFINE_SPADES_SETTING(n_hitTestSize, "210");
 DEFINE_SPADES_SETTING(n_hitTestTransparency, "1");
 DEFINE_SPADES_SETTING(br_LuckView, "1");
 DEFINE_SPADES_SETTING(n_StatsColor, "0");
+DEFINE_SPADES_SETTING(n_PlayerCoord, "1");
 
 // ADDED: Settings
 SPADES_SETTING(dd_specNames);
@@ -452,6 +454,43 @@ namespace spades {
 				renderer->DrawImage(img, AABB2(x - (6/ size)+linepos, y - (2/ size), -lineh/ size, 4/ size));
 				renderer->DrawImage(img, AABB2(x + (6/ size)-linepos, y - (2/ size), lineh/ size, 4/ size));
 			}
+		}
+		
+		void Client::PlayerCoords(){
+			SPADES_MARK_FUNCTION();
+			Player &p = GetWorld()->GetLocalPlayer().value();
+
+			int x = p.GetPosition().x;
+			int y = p.GetPosition().y;
+			x = div(x,64).quot;
+			y = div(y,64).quot+1;
+
+			char buf[8];			
+
+			switch (x){
+				case 0: sprintf(buf, "A%i", y); break;
+				case 1: sprintf(buf, "B%i", y); break;
+				case 2: sprintf(buf, "C%i", y); break;
+				case 3: sprintf(buf, "D%i", y); break;
+				case 4: sprintf(buf, "E%i", y); break;
+				case 5: sprintf(buf, "F%i", y); break;
+				case 6: sprintf(buf, "G%i", y); break;
+				case 7: sprintf(buf, "H%i", y); break;
+				default: sprintf(buf, "XY");;
+			}
+
+	        float ypos = cg_minimapSize;
+	        if (ypos < 32)
+				ypos = 32;
+	        if (ypos > 256)
+				ypos = 256;
+			
+			float xpos = renderer->ScreenWidth() - ypos;
+
+			IFont &font = fontManager->GetGuiFont();
+			font.DrawShadow(buf, Vector2(xpos - 50.f,ypos/2), 1.3, 
+			Vector4(1, 1, 1, (float)n_hudTransparency),
+			Vector4(0.f, 0.f, 0.f, 0.5f* (float)n_hudTransparency));
 		}
 
 		void Client::DrawFirstPersonHUD() {
@@ -942,6 +981,10 @@ namespace spades {
 				if (p->GetTeamId() < 2) {
 					// player is not spectator
 					DrawHitTestDebugger();
+					
+					if(n_PlayerCoord){
+						PlayerCoords();
+					}
 					
 					if(br_LuckView && p->IsAlive()){
 						luckView->Draw();

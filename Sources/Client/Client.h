@@ -509,6 +509,7 @@ namespace spades {
 			// END OF ADDED
 			
 			bool hitTestSizeToggle;
+			void PlayerCoords();
 		};
 	} // namespace client
 } // namespace spades
