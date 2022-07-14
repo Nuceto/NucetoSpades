@@ -32,6 +32,12 @@
 
 DEFINE_SPADES_SETTING(cg_chatHeight, "30");
 DEFINE_SPADES_SETTING(cg_killfeedHeight, "26");
+DEFINE_SPADES_SETTING(n_chatColorRed, "255");
+DEFINE_SPADES_SETTING(n_chatColorGreen, "255");
+DEFINE_SPADES_SETTING(n_chatColorBlue, "255");
+DEFINE_SPADES_SETTING(n_chatServerColorRed, "255");
+DEFINE_SPADES_SETTING(n_chatServerColorGreen, "255");
+DEFINE_SPADES_SETTING(n_chatServerColorBlue, "255");
 
 namespace spades {
 	namespace client {
@@ -218,6 +224,13 @@ namespace spades {
 				case MsgColorTeam3:
 					return w ? ConvertColor(w->GetTeam(2).color) : MakeVector4(1, 1, 0, 1);
 				case MsgColorRed: return MakeVector4(1, 0, 0, 1);
+				
+				case MsgCustomColor: return MakeVector4((float)n_chatColorRed / 255.f,
+				(float)n_chatColorGreen / 255.f, (float)n_chatColorBlue / 255.f, 1);
+				
+				case MsgServerCustomColor: return MakeVector4((float)n_chatServerColorRed / 255.f,
+				(float)n_chatServerColorGreen / 255.f, (float)n_chatServerColorBlue / 255.f, 1);
+				
 				case MsgColorGray: return MakeVector4(0.65f, 0.65f, 0.65f, 1);
 				case MsgColorSysInfo: return MakeVector4(0, 1, 0, 1);
 				default: return MakeVector4(1, 1, 1, 1);
@@ -375,8 +388,7 @@ namespace spades {
 						tx += font->Measure(ch).x;
 					}
 				}
-
-			endDrawLine:
+				endDrawLine:
 				y += ent.height;
 			}
 		}

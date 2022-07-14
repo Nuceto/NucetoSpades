@@ -43,17 +43,17 @@ std::string VersionInfo::GetVersionInfo() {
 		windowsVersion += " Server";
 	return windowsVersion;
 #elif defined(__FreeBSD__)
-	return std::string("FreeBSD");
+	return std::string("FreeBSD | NucetoSpades 0.5 | https://github.com/Nuceto/NucetoSpades/releases");
 #elif defined(__DragonFly__)
-	return std::string("DragonFly BSD");
+	return std::string("DragonFly BSD | NucetoSpades 0.5 | https://github.com/Nuceto/NucetoSpades/releases");
 #elif defined(__OpenBSD__)
-	return std::string("OpenBSD");
+	return std::string("OpenBSD | NucetoSpades 0.5 | https://github.com/Nuceto/NucetoSpades/releases");
 #elif defined(__NetBSD__)
-	return std::string("NetBSD");
+	return std::string("NetBSD | NucetoSpades 0.5 | https://github.com/Nuceto/NucetoSpades/releases");
 #elif defined(__sun)
-	return std::string("Solaris / Illumos");
+	return std::string("Solaris / Illumos | NucetoSpades 0.5 | https://github.com/Nuceto/NucetoSpades/releases");
 #elif defined(__HAIKU__)
-	return std::string("Haiku");
+	return std::string("Haiku | NucetoSpades 0.5 | https://github.com/Nuceto/NucetoSpades/releases");
 #else
 	return std::string("Unknown OS | NucetoSpades 0.5 | https://github.com/Nuceto/NucetoSpades/releases";
 #endif

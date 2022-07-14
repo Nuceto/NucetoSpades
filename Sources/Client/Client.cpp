@@ -690,7 +690,7 @@ namespace spades {
 					s += ChatWindow::TeamCoords(p.GetPosition().x, p.GetPosition().y);
 				}
 				s += ": ";
-				s += msg;
+				s += ChatWindow::ColoredMessage(msg, MsgCustomColor);
 				
 				std::string m = " -> Mention";
 				size_t w = msg.find(n_mentionWord);
@@ -759,7 +759,7 @@ namespace spades {
 				return;
 			}
 
-			chatWindow->AddMessage(msg);
+			chatWindow->AddMessage(ChatWindow::ColoredMessage(msg, MsgServerCustomColor));
 		}
 
 #pragma mark - Follow / Spectate
